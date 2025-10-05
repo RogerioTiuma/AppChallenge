@@ -1,6 +1,6 @@
 [theme]
 primaryColor="#EAFE07"
-backgroundColor="#07173F"
-secondaryBackgroundColor="#0042A6"
+backgroundColor= "#0042A6"
+secondaryBackgroundColor= "#07173F"
 textColor="#fafafa"
-font="sans serif"
+font="Overpass Regular"
