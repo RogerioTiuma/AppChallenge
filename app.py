@@ -38,6 +38,17 @@ apptitle = 'VictorIA Trekkers'
 
 st.set_page_config(page_title=apptitle, page_icon=":eyeglasses:")
 
+st.markdown(
+    """
+<style>
+span[data-baseweb="tag"] {
+  color: #07173F !important;
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
 st.sidebar.image("assets/image2.png", use_column_width=True)
 st.sidebar.markdown("# Exoplanet Data Explorer")
 
