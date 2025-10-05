@@ -1,37 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-import requests, os
-from gwpy.timeseries import TimeSeries
-from gwosc.locate import get_urls
-from gwosc import datasets
-from gwosc.api import fetch_event_json
-
-from copy import deepcopy
-import base64
-
-from helper import make_audio_file
-
-# Use the non-interactive Agg backend, which is recommended as a
-# thread-safe backend.
-# See https://matplotlib.org/3.3.2/faq/howto_faq.html#working-with-threads.
-import matplotlib as mpl
-
-mpl.use("agg")
-
-##############################################################################
-# Workaround for the limited multi-threading support in matplotlib.
-# Per the docs, we will avoid using `matplotlib.pyplot` for figures:
-# https://matplotlib.org/3.3.2/faq/howto_faq.html#how-to-use-matplotlib-in-a-web-application-server.
-# Moreover, we will guard all operations on the figure instances by the
-# class-level lock in the Agg backend.
-##############################################################################
-from matplotlib.backends.backend_agg import RendererAgg
-from threading import Lock
-
-_lock = Lock()
 
 # -- Set page config
 apptitle = 'VictorIA Trekkers'
