@@ -38,14 +38,15 @@ apptitle = 'VictorIA Trekkers'
 
 st.set_page_config(page_title=apptitle, page_icon=":eyeglasses:")
 
-# -- VictorIA Trekkers
-st.sidebar.markdown("## Exoplanet Data Explorer")
+st.sidebar.image("assets/image2.png", use_column_width=True)
+st.sidebar.markdown("# Exoplanet Data Explorer")
 
 uploaded_df = None
 with st.sidebar:
     tab_input, tab_view = st.tabs(["Input", "View"])
     with tab_input:
         # -- upload data file
+        tab_input.markdown('## Data load')
         uploaded_file = tab_input.file_uploader("Choose an Excel or CSV file", type=['csv', 'xlsx'])
         if uploaded_file is not None:
             # Check file type and load accordingly
@@ -57,10 +58,12 @@ with st.sidebar:
                 st.error("Unsupported file type.")
                 uploaded_df = None
 
+        tab_input.markdown('## AI configuration')
+        tab_input.markdown('### Model')
         select_model = tab_input.selectbox('Select Model', ['None', 'CNN', 'CNN + Explainability Layer', 'SNN', 'GAN',
                                                              'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
 
-        tab_input.markdown('## Set hyperparameters')
+        tab_input.markdown('### Set hyperparameters')
         test_size = tab_input.slider('Test size (%)', 0, 100, 30)  # min, max, default
         max_iter = tab_input.slider('Max iterations', 100, 5000, 1000)  # min, max, default
         random_state = tab_input.slider('Random state', 10, 100, 42)  # min, max, default
