@@ -68,6 +68,9 @@ with st.sidebar:
                 )
                 st.success("Data appended!")
 
+        if st.button("Start training the model"):
+            pass
+
     with tab_view:
         st.write("Data Preview")
         if uploaded_file is not None and uploaded_df is not None:
