@@ -1,16 +1,10 @@
-from dotenv import load_dotenv
-from openai import OpenAI
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 import pandas as pd
 import streamlit as st
 
-# -- App config
-load_dotenv()
-
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY")
-)
 
 # -- Set page config
 apptitle = 'VictorIA Trekkers'
@@ -286,42 +280,57 @@ uploaded_df = uploaded_df[columns_to_keep]
 st.title("Main Content Area")
 if uploaded_df is not None:
     st.write("Preview of uploaded data:")
-<<<<<<< HEAD
-    st.dataframe(uploaded_df, width=1000)
 
 
+# --- Statistical Summary ---
+st.subheader("Statistical Summary of the Data")
 
+# Show descriptive statistics
+st.write("Main statistics of the numerical variables:")
+st.dataframe(uploaded_df.describe().T, width=1000)
 
+# --- Quick Visualizations ---
+st.subheader("Quick Visualizations")
 
+# Distribution of orbital periods
+fig, ax = plt.subplots()
+sns.histplot(uploaded_df["Orbital Period [days]"], bins=50, kde=True, ax=ax)
+ax.set_title("Distribution of Orbital Periods (days)")
+st.pyplot(fig)
 
-########### Código Principal #############
+# Planet radius vs Equilibrium temperature
+fig, ax = plt.subplots()
+sns.scatterplot(
+    data=uploaded_df,
+    x="Planetary Radius [Earth radii]",
+    y="Equilibrium Temperature [K]",
+    hue="Stellar Effective Temperature [K]",
+    palette="viridis",
+    alpha=0.7,
+    ax=ax
+)
+ax.set_title("Planetary Radius vs Equilibrium Temperature")
+st.pyplot(fig)
 
+# Correlation between main variables
+st.subheader("Correlation Between Variables")
+fig, ax = plt.subplots(figsize=(10,6))
+corr = uploaded_df.corr(numeric_only=True)
+sns.heatmap(corr, cmap="coolwarm", center=0, annot=False, ax=ax)
+st.pyplot(fig)
 
+# --- False Positive Flags ---
+st.subheader("False Positive Indicators")
 
-=======
-    st.dataframe(uploaded_df)
+flags = [
+    "Not Transit-Like False Positive Flag",
+    "Stellar Eclipse False Positive Flag",
+    "Centroid Offset False Positive Flag",
+    "Ephemeris Match Indicates Contamination False Positive Flag"
+]
 
-    prompt = st.text_area("Ask a question about the data", "How many rows are in the dataset?")
-    if st.button("Get Answer"):
-        response = client.chat.completions.create(
-            extra_body={},
-            model="google/gemma-3-4b-it:free",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": prompt
-                        },
-                        {
-                            "type": "dataframe",
-                            "dataframe": uploaded_df.to_json()
-                        }
-                    ]
-                }
-            ]
-        )
-        st.write("Answer from AI provider:")
-        st.write(response.choices[0].message["content"])
->>>>>>> origin/main
+false_positive_summary = uploaded_df[flags].sum().reset_index()
+false_positive_summary.columns = ["Flag", "Number of Cases"]
+
+st.bar_chart(false_positive_summary.set_index("Flag"))
+
