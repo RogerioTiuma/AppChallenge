@@ -1,5 +1,16 @@
-import streamlit as st
+from dotenv import load_dotenv
+from openai import OpenAI
+import os
 import pandas as pd
+import streamlit as st
+
+# -- App config
+load_dotenv()
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
 
 # -- Set page config
 apptitle = 'VictorIA Trekkers'
@@ -40,7 +51,7 @@ with st.sidebar:
         tab_input.markdown('## AI configuration')
         tab_input.markdown('### Model')
         select_model = tab_input.selectbox('Select Model', ['None', 'CNN', 'CNN + Explainability Layer', 'SNN', 'GAN',
-                                                             'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
+                                                            'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
 
         tab_input.markdown('### Set hyperparameters')
         test_size = tab_input.slider('Test size (%)', 0, 100, 30)  # min, max, default
@@ -71,3 +82,27 @@ st.title("Main Content Area")
 if uploaded_df is not None:
     st.write("Preview of uploaded data:")
     st.dataframe(uploaded_df)
+
+    prompt = st.text_area("Ask a question about the data", "How many rows are in the dataset?")
+    if st.button("Get Answer"):
+        response = client.chat.completions.create(
+            extra_body={},
+            model="google/gemma-3-4b-it:free",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": prompt
+                        },
+                        {
+                            "type": "dataframe",
+                            "dataframe": uploaded_df.to_json()
+                        }
+                    ]
+                }
+            ]
+        )
+        st.write("Answer from AI provider:")
+        st.write(response.choices[0].message["content"])
