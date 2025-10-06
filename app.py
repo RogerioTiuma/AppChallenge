@@ -25,7 +25,7 @@ span[data-baseweb="tag"] {
 st.sidebar.image("assets/image2.png", width='stretch')
 st.sidebar.markdown("# Exoplanet Data Explorer")
 
-uploaded_df = None
+uploaded_df = pd.read_csv('data/dataset_exoplanetas_final.csv')
 with st.sidebar:
     tab_input, tab_view = st.tabs(["Input", "View"])
     
@@ -278,8 +278,7 @@ uploaded_df = uploaded_df[columns_to_keep]
 
 
 st.title("Main Content Area")
-if uploaded_df is not None:
-    st.write("Preview of uploaded data:")
+st.write("Preview of uploaded data:")
 
 
 # --- Statistical Summary ---
