@@ -52,8 +52,8 @@ with st.sidebar:
 
         tab_input.markdown('## AI configuration')
         tab_input.markdown('### Model')
-        select_model = tab_input.selectbox('Select Model', ['None', 'CNN', 'CNN + Explainability Layer', 'SNN', 'GAN',
-                                                            'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
+        select_model = tab_input.selectbox('Select Model', ['CNN', 'CNN + Explainability Layer (Do not work)', 'SNN (Do not work)', 'GAN (Do not work)',
+                                                            'KNN (Do not work)', 'RF (Do not work)', 'DT (Do not work)', 'CatBoost (Do not work)', 'Logistic Regression (Do not work)'])
 
         tab_input.markdown('### Set hyperparameters')
 
@@ -62,7 +62,7 @@ with st.sidebar:
         random_state = tab_input.slider('Random state', 10, 100, 42)  # min, max, default
         validation_fraction = tab_input.slider('Validation fraction', 0, 20, 15)  # min, max, default
 
-        data_origin = tab_input.multiselect('Select Data Origin', ['Kepler', 'K2', 'TESS'])
+        data_origin = tab_input.multiselect('Select Data Origin', ['Kepler', 'K2 (Do not work)', 'TESS (Do not work)'])
 
         # Display the uploaded data for preview in main area
         if uploaded_df is not None:
