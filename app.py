@@ -1,37 +1,16 @@
-import streamlit as st
+from dotenv import load_dotenv
+from openai import OpenAI
+import os
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import streamlit as st
 
-import requests, os
-from gwpy.timeseries import TimeSeries
-from gwosc.locate import get_urls
-from gwosc import datasets
-from gwosc.api import fetch_event_json
+# -- App config
+load_dotenv()
 
-from copy import deepcopy
-import base64
-
-from helper import make_audio_file
-
-# Use the non-interactive Agg backend, which is recommended as a
-# thread-safe backend.
-# See https://matplotlib.org/3.3.2/faq/howto_faq.html#working-with-threads.
-import matplotlib as mpl
-
-mpl.use("agg")
-
-##############################################################################
-# Workaround for the limited multi-threading support in matplotlib.
-# Per the docs, we will avoid using `matplotlib.pyplot` for figures:
-# https://matplotlib.org/3.3.2/faq/howto_faq.html#how-to-use-matplotlib-in-a-web-application-server.
-# Moreover, we will guard all operations on the figure instances by the
-# class-level lock in the Agg backend.
-##############################################################################
-from matplotlib.backends.backend_agg import RendererAgg
-from threading import Lock
-
-_lock = Lock()
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
 
 # -- Set page config
 apptitle = 'VictorIA Trekkers'
@@ -74,7 +53,7 @@ with st.sidebar:
         tab_input.markdown('## AI configuration')
         tab_input.markdown('### Model')
         select_model = tab_input.selectbox('Select Model', ['None', 'CNN', 'CNN + Explainability Layer', 'SNN', 'GAN',
-                                                             'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
+                                                            'KNN', 'RF', 'DT', 'CatBoost', 'Logistic Regression'])
 
         tab_input.markdown('### Set hyperparameters')
 
@@ -307,6 +286,7 @@ uploaded_df = uploaded_df[columns_to_keep]
 st.title("Main Content Area")
 if uploaded_df is not None:
     st.write("Preview of uploaded data:")
+<<<<<<< HEAD
     st.dataframe(uploaded_df, width=1000)
 
 
@@ -318,3 +298,30 @@ if uploaded_df is not None:
 
 
 
+=======
+    st.dataframe(uploaded_df)
+
+    prompt = st.text_area("Ask a question about the data", "How many rows are in the dataset?")
+    if st.button("Get Answer"):
+        response = client.chat.completions.create(
+            extra_body={},
+            model="google/gemma-3-4b-it:free",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": prompt
+                        },
+                        {
+                            "type": "dataframe",
+                            "dataframe": uploaded_df.to_json()
+                        }
+                    ]
+                }
+            ]
+        )
+        st.write("Answer from AI provider:")
+        st.write(response.choices[0].message["content"])
+>>>>>>> origin/main
